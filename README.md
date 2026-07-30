@@ -4,7 +4,7 @@ Retro, pixelated, glitchy GitHub stats cards for your `README.md` — rendered l
 as SVG by a tiny serverless function on top of the [GitHub REST Repos API](https://docs.github.com/en/rest/repos?apiVersion=2026-03-10).
 
 <p align="center">
-  <img src="https://YOUR-DEPLOYMENT.vercel.app/api/stats?repo=octocat/Hello-World&theme=crt" alt="repo stats card" />
+  <img src="https://gh-glitch-stats.vercel.app/api/stats?user=drewstephensdesigns&theme=crt" alt="repo stats card" />
 </p>
 
 No client-side JS ships in the badge itself — GitHub renders it as a plain
@@ -45,7 +45,7 @@ Once deployed, embed a card with a plain markdown image:
 
 | crt | matrix | vaporwave |
 |---|---|---|
-| ![crt](https://YOUR-DEPLOYMENT.vercel.app/api/stats?repo=octocat/Hello-World&theme=crt) | ![matrix](https://YOUR-DEPLOYMENT.vercel.app/api/stats?repo=octocat/Hello-World&theme=matrix) | ![vapor](https://YOUR-DEPLOYMENT.vercel.app/api/stats?repo=octocat/Hello-World&theme=vapor) |
+| ![crt](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=crt) | ![matrix](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=matrix) | ![vapor](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=vapor) |
 
 ## Deploying
 
