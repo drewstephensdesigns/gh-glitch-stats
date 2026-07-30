@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>gh-glitch-stats // README badge generator</title>
+<meta name="description" content="Retro pixel/glitch GitHub stats cards for your README, rendered live as SVG." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f0a;
+    --grid:#132314;
+    --fg:#e8ffe8;
+    --primary:#39ff14;
+    --accentA:#ff2079;
+    --accentB:#00fff9;
+    --dim:#5f8f5f;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.35) 0px, rgba(0,0,0,0.35) 1px, transparent 1px, transparent 4px),
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/10px 10px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/10px 10px,
+      var(--bg);
+    color:var(--fg);
+    font-family:'IBM Plex Mono', monospace;
+    min-height:100vh;
+    padding:0 0 80px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
+    z-index:5;
+  }
+  .crt-flicker{
+    animation:flicker 6s infinite;
+  }
+  @keyframes flicker{
+    0%,100%{opacity:1;}
+    92%{opacity:1;}
+    93%{opacity:.82;}
+    94%{opacity:1;}
+    95%{opacity:.9;}
+    96%{opacity:1;}
+  }
+  header{
+    padding:48px 24px 20px;
+    max-width:860px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    color:var(--dim);
+    font-size:12px;
+    letter-spacing:2px;
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:'Press Start 2P', monospace;
+    font-size:clamp(20px, 4vw, 34px);
+    line-height:1.5;
+    margin:0 0 20px;
+    color:var(--fg);
+    position:relative;
+    width:fit-content;
+  }
+  h1 .glitch{
+    position:relative;
+    display:inline-block;
+  }
+  h1 .glitch::before,
+  h1 .glitch::after{
+    content:attr(data-text);
+    position:absolute;
+    left:0; top:0;
+    width:100%;
+    overflow:hidden;
+    background:var(--bg);
+  }
+  h1 .glitch::before{
+    color:var(--accentA);
+    left:2px;
+    animation:glitchTop 3.2s infinite linear alternate-reverse;
+  }
+  h1 .glitch::after{
+    color:var(--accentB);
+    left:-2px;
+    animation:glitchBottom 2.4s infinite linear alternate-reverse;
+  }
+  @keyframes glitchTop{
+    0%{clip-path:inset(0 0 85% 0); transform:translate(0,0);}
+    20%{clip-path:inset(10% 0 60% 0); transform:translate(-2px,0);}
+    40%{clip-path:inset(40% 0 30% 0); transform:translate(2px,0);}
+    60%{clip-path:inset(70% 0 5% 0); transform:translate(-1px,0);}
+    80%{clip-path:inset(15% 0 70% 0); transform:translate(1px,0);}
+    100%{clip-path:inset(0 0 85% 0); transform:translate(0,0);}
+  }
+  @keyframes glitchBottom{
+    0%{clip-path:inset(80% 0 0 0); transform:translate(0,0);}
+    25%{clip-path:inset(50% 0 20% 0); transform:translate(2px,0);}
+    50%{clip-path:inset(20% 0 55% 0); transform:translate(-2px,0);}
+    75%{clip-path:inset(60% 0 10% 0); transform:translate(1px,0);}
+    100%{clip-path:inset(80% 0 0 0); transform:translate(0,0);}
+  }
+  p.lede{
+    max-width:60ch;
+    color:var(--dim);
+    font-size:14px;
+    line-height:1.7;
+  }
+  main{
+    max-width:860px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .panel{
+    border:2px solid var(--primary);
+    background:rgba(0,0,0,0.35);
+    padding:24px;
+    margin:28px 0;
+    position:relative;
+  }
+  .panel::before{
+    content:"";
+    position:absolute;
+    top:-2px; left:-2px;
+    width:8px; height:8px;
+    background:var(--primary);
+  }
+  .panel::after{
+    content:"";
+    position:absolute;
+    bottom:-2px; right:-2px;
+    width:8px; height:8px;
+    background:var(--primary);
+  }
+  .panel h2{
+    font-family:'Press Start 2P', monospace;
+    font-size:13px;
+    color:var(--accentB);
+    margin:0 0 20px;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    color:var(--dim);
+    margin:14px 0 6px;
+  }
+  input, select{
+    width:100%;
+    background:#000;
+    border:1px solid var(--dim);
+    color:var(--fg);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    padding:10px 12px;
+  }
+  input:focus, select:focus{
+    outline:2px solid var(--primary);
+    outline-offset:1px;
+  }
+  .row{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .row > div{flex:1; min-width:160px;}
+  button{
+    margin-top:20px;
+    background:var(--primary);
+    color:#04140a;
+    border:none;
+    font-family:'Press Start 2P', monospace;
+    font-size:11px;
+    padding:14px 18px;
+    cursor:pointer;
+    letter-spacing:1px;
+  }
+  button:hover{background:var(--accentB);}
+  button:active{transform:translateY(1px);}
+  .preview{
+    margin-top:24px;
+    display:flex;
+    justify-content:center;
+    min-height:200px;
+    align-items:center;
+  }
+  .preview img{
+    max-width:100%;
+    image-rendering:pixelated;
+  }
+  code, .embed{
+    display:block;
+    background:#000;
+    border:1px dashed var(--dim);
+    color:var(--primary);
+    font-size:12px;
+    padding:14px;
+    white-space:pre-wrap;
+    word-break:break-all;
+    margin-top:14px;
+  }
+  .examples{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:20px;
+  }
+  .examples img{max-width:100%;image-rendering:pixelated;}
+  .cursor{
+    display:inline-block;
+    width:9px; height:14px;
+    background:var(--primary);
+    animation:blink 1s steps(1) infinite;
+    vertical-align:middle;
+    margin-left:4px;
+  }
+  @keyframes blink{50%{opacity:0;}}
+  footer{
+    max-width:860px;
+    margin:0 auto;
+    padding:24px;
+    color:var(--dim);
+    font-size:12px;
+  }
+  a{color:var(--accentB);}
+  .small{font-size:11px;color:var(--dim);}
+</style>
+</head>
+<body class="crt-flicker">
+  <header>
+    <p class="eyebrow">// boot: gh-glitch-stats.sys &mdash; readme badge renderer</p>
+    <h1><span class="glitch" data-text="GH_GLITCH_STATS">GH_GLITCH_STATS</span></h1>
+    <p class="lede">Live, server-rendered SVG stat cards for your GitHub README &mdash;
+    pixel grid backgrounds, CRT scanlines, and RGB-split glitch text. No build step,
+    no client JS required in the README itself: just an &lt;img&gt; tag pointing here.</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>&gt; GENERATE<span class="cursor"></span></h2>
+      <div class="row">
+        <div>
+          <label for="mode">MODE</label>
+          <select id="mode">
+            <option value="repo">single repo</option>
+            <option value="user">user profile (aggregate)</option>
+          </select>
+        </div>
+        <div>
+          <label for="theme">THEME</label>
+          <select id="theme">
+            <option value="crt">crt (green phosphor)</option>
+            <option value="matrix">matrix</option>
+            <option value="vapor">vaporwave</option>
+          </select>
+        </div>
+      </div>
+      <label id="targetLabel" for="target">OWNER/REPO</label>
+      <input id="target" placeholder="octocat/Hello-World" value="octocat/Hello-World" />
+
+      <button id="generate">RUN ./generate.sh</button>
+
+      <div class="preview" id="preview">
+        <img id="previewImg" src="/api/stats?repo=octocat/Hello-World&theme=crt" alt="live preview" />
+      </div>
+
+      <label>MARKDOWN EMBED</label>
+      <code id="embedCode">![stats](/api/stats?repo=octocat/Hello-World&amp;theme=crt)</code>
+      <p class="small">Once deployed, swap the leading slash for your full Vercel URL,
+      e.g. <code style="display:inline;padding:0;border:0;background:none;">https://your-app.vercel.app/api/stats?...</code></p>
+    </section>
+
+    <section class="panel">
+      <h2>&gt; THEMES</h2>
+      <div class="examples">
+        <img loading="lazy" src="/api/stats?repo=octocat/Hello-World&theme=crt" alt="crt theme example" />
+        <img loading="lazy" src="/api/stats?repo=octocat/Hello-World&theme=matrix" alt="matrix theme example" />
+        <img loading="lazy" src="/api/stats?repo=octocat/Hello-World&theme=vapor" alt="vaporwave theme example" />
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>&gt; INSTALL</h2>
+      <p class="small">1. Fork/clone the repo. 2. Deploy to Vercel (or run <code style="display:inline;padding:0;border:0;background:none;">vercel dev</code> locally).
+      3. Optional: set a <code style="display:inline;padding:0;border:0;background:none;">GITHUB_TOKEN</code> env var to raise API rate limits. 4. Drop the
+      markdown embed above into your README.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>gh-glitch-stats &mdash; built on the GitHub REST Repos API. no tracking, no client JS in the badge itself.</p>
+  </footer>
+
+<script>
+  const mode = document.getElementById('mode');
+  const theme = document.getElementById('theme');
+  const target = document.getElementById('target');
+  const targetLabel = document.getElementById('targetLabel');
+  const previewImg = document.getElementById('previewImg');
+  const embedCode = document.getElementById('embedCode');
+  const generate = document.getElementById('generate');
+
+  function buildUrl(){
+    const isUser = mode.value === 'user';
+    targetLabel.textContent = isUser ? 'USERNAME' : 'OWNER/REPO';
+    if(isUser && target.value === 'octocat/Hello-World'){ target.value = 'octocat'; }
+    if(!isUser && target.value === 'octocat'){ target.value = 'octocat/Hello-World'; }
+    const param = isUser ? 'user' : 'repo';
+    const val = encodeURIComponent(target.value.trim());
+    return `/api/stats?${param}=${val}&theme=${theme.value}`;
+  }
+
+  function update(){
+    const url = buildUrl();
+    previewImg.src = url;
+    embedCode.textContent = `![stats](${url})`;
+  }
+
+  generate.addEventListener('click', update);
+  mode.addEventListener('change', update);
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "gh-glitch-stats",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Retro pixel/glitch GitHub stats cards for your README, rendered as live SVG.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
