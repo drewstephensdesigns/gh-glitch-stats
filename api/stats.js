@@ -1,11 +1,11 @@
 // api/stats.js
 // Retro/pixel/glitch GitHub stats card, rendered server-side as SVG.
 // Usage:
-//   /api/stats?repo=owner/name          -> single repo card
-//   /api/stats?user=someusername        -> aggregate profile card
+//   /api/stats?repo=owner/name     -> single repo card
+//   /api/stats?user=someusername   -> aggregate profile card
 // Optional:
-//   &theme=crt | matrix | vapor | gameboy | blueprint        (default: crt)
-//   &glitch=0                           (disable jitter/RGB-split animation)
+//   &theme=crt | matrix | vapor | gameboy | blueprint | terminal      (default: crt)
+//   &glitch=0  (disable jitter/RGB-split animation)
 
 const API_VERSION = "2026-03-10";
 const GH_API = "https://api.github.com";
@@ -66,6 +66,18 @@ const THEMES = {
     label: "#8fc4e8",
     scanline: "#001133",
   },
+  terminal: {
+    chrome: "window",
+    bg: "#1e1e1e",
+    titlebar: "#323233",
+    fg: "#d4d4d4",
+    primary: "#4ec9b0",
+    accentA: "#569cd6",
+    accentB: "#dcdcaa",
+    dim: "#6a6a6a",
+    label: "#9cdcf3",
+    dots: ["#ff5f56", "#ffbd2e", "#27c93f"]
+  }
 };
 
 function esc(s) {
@@ -81,6 +93,26 @@ function fmt(n) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
   if (n >= 1000) return (n / 1000).toFixed(1) + "K";
   return String(n);
+}
+
+const AUTHOR_USERNAME = "drewstephensdesigns";
+
+// Octicon "mark-github" path, drawn inline so no external asset/font is needed.
+const GITHUB_ICON_PATH =
+    "M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z";
+
+// Renders the GitHub-mark + username, right-aligned so it works at any width.
+function githubCredit(rightX, y, color) {
+  const size = 12;
+  const textWidth = AUTHOR_USERNAME.length * 6.5 + 8; // monospace char-width estimate
+  const iconX = rightX - textWidth - size - 4;
+  return `
+      <g transform="translate(${iconX}, ${y - size + 2}) scale(${size / 16})">
+        <path fill="${color}" fill-rule="evenodd" d="${GITHUB_ICON_PATH}"/>
+      </g>
+      <text x="${iconX + size + 4}" y="${y}" font-family="'Courier New', monospace" font-size="11" fill="${color}">@${esc(
+      AUTHOR_USERNAME
+  )}</text>`;
 }
 
 async function ghFetch(path) {
@@ -149,8 +181,70 @@ async function getUserStats(username) {
   };
 }
 
+function renderTerminalWindow({ title, rows, tag}, t) {
+  const W = 480;
+  const H = 210;
+  const barH = 28;
+  const rowH = 24;
+  const rowsStartY = barH + 72;
+  const r = 10;
+
+  const dotsRow = t.dots
+      .map((c, i) => `<circle cx="${20 + i * 18}" cy="${barH / 2}" r="6" fill="${c}"/>`)
+      .join("");
+
+  const rowEls = rows
+      .map(([label, value], i) => {
+        const y = rowsStartY + i * rowH;
+        return `
+      <text x="28" y="${y}" font-family="'Courier New', monospace" font-size="14" fill="${t.label}">&gt; ${esc(
+            label
+        )}</text>
+      <text x="220" y="${y}" font-family="'Courier New', monospace" font-weight="700" font-size="14" fill="${t.primary}">${esc(
+            value
+        )}</text>`;
+      })
+      .join("");
+
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(
+      title
+  )} stats">
+  <defs>
+    <clipPath id="winclip">
+      <rect x="0" y="0" width="${W}" height="${H}" rx="${r}" ry="${r}"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#winclip)">
+    <rect x="0" y="0" width="${W}" height="${H}" fill="${t.bg}"/>
+    <rect x="0" y="0" width="${W}" height="${barH}" fill="${t.titlebar}"/>
+    ${dotsRow}
+    <text x="${W / 2}" y="${barH / 2 + 4}" text-anchor="middle" font-family="'Courier New', monospace" font-size="12" fill="${t.dim}">${esc(
+      title
+  )} &#8212; zsh</text>
+    <line x1="0" y1="${barH}" x2="${W}" y2="${barH}" stroke="#000000" stroke-opacity="0.3" stroke-width="1"/>
+ 
+    <text x="${W - 20}" y="${barH + 24}" text-anchor="end" font-family="'Courier New', monospace" font-size="12" letter-spacing="1" fill="${t.accentA}">[${esc(
+      tag
+  )}]</text>
+    <text x="24" y="${barH + 30}" font-family="'Courier New', monospace" font-weight="700" font-size="20" fill="${t.fg}">${esc(
+      title
+  )}</text>
+    <line x1="24" y1="${barH + 40}" x2="${W - 24}" y2="${barH + 40}" stroke="${t.dim}" stroke-width="1" stroke-dasharray="4 3"/>
+    ${rowEls}
+    <text x="28" y="${H - 14}" font-family="'Courier New', monospace" font-size="11" fill="${t.dim}">$ generated_by gh-glitch-stats<tspan fill="${t.primary}">_</tspan></text>
+    ${githubCredit(W - 20, H - 14, t.dim)}
+  </g>
+  <rect x="0" y="0" width="${W}" height="${H}" rx="${r}" ry="${r}" fill="none" stroke="#000000" stroke-opacity="0.5" stroke-width="1"/>
+</svg>`;
+}
+
 function renderSVG({ title, rows, tag }, themeName, glitchOn) {
   const t = THEMES[themeName] || THEMES.crt;
+
+  if (t.chrome === "window"){
+    return renderTerminalWindow({ title, rows, tag}, t);
+  }
+
   const W = 480;
   const H = 200;
   const rowH = 24;
@@ -228,7 +322,7 @@ function renderSVG({ title, rows, tag }, themeName, glitchOn) {
   const tagY = 24;
 
   return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(
-    title
+      title
   )} stats">
   <defs>
     ${gridPattern}
@@ -238,12 +332,13 @@ function renderSVG({ title, rows, tag }, themeName, glitchOn) {
   <rect x="0" y="0" width="${W}" height="${H}" fill="none" stroke="${t.primary}" stroke-width="2"/>
   ${cornerRects}
   <text x="${W - 20}" y="${tagY}" text-anchor="end" font-family="'Courier New', monospace" font-size="12" letter-spacing="1" fill="${t.accentB}">[${esc(
-    tag
+      tag
   )}]</text>
   ${titleLayers}
   <line x1="24" y1="60" x2="${W - 24}" y2="60" stroke="${t.dim}" stroke-width="1" stroke-dasharray="4 3"/>
   ${rowEls}
   <text x="28" y="${H - 14}" font-family="'Courier New', monospace" font-size="11" fill="${t.dim}">$ generated_by gh-glitch-stats<tspan fill="${t.primary}">_</tspan></text>
+  ${githubCredit(W - 20, H - 14, t.dim)}
   <rect x="0" y="0" width="${W}" height="${H}" fill="url(#scanlines)"/>
 </svg>`;
 }
