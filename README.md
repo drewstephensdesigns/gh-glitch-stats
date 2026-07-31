@@ -1,4 +1,4 @@
-# gh-glitch-stats
+# GitHub Glitch Stats Card
 
 Retro, pixelated, glitchy GitHub stats cards for your `README.md` — rendered live
 as SVG by a tiny serverless function on top of the [GitHub REST Repos API](https://docs.github.com/en/rest/repos?apiVersion=2026-03-10).
