@@ -4,7 +4,7 @@
 //   /api/stats?repo=owner/name          -> single repo card
 //   /api/stats?user=someusername        -> aggregate profile card
 // Optional:
-//   &theme=crt | matrix | vapor         (default: crt)
+//   &theme=crt | matrix | vapor | gameboy | blueprint        (default: crt)
 //   &glitch=0                           (disable jitter/RGB-split animation)
 
 const API_VERSION = "2026-03-10";
@@ -40,6 +40,26 @@ const THEMES = {
     accentB: "#b967ff",
     dim: "#7a5ea8",
     scanline: "#0a0416",
+  },
+  gameboy: {
+    bg: "#0f380f",
+    grid: "#144414",
+    fg: "#9bbc0f",
+    primary: "#8bac0f",
+    accentA: "#306230",
+    accentB: "#9bbc0f",
+    dim: "#306230",
+    scanline: "#0f380f",
+  },
+  blueprint: {
+    bg: "#001133",
+    grid: "#0a2a5c",
+    fg: "#dceeff",
+    primary: "#33ccff",
+    accentA: "#ff6b6b",
+    accentB: "#7fd8ff",
+    dim: "#3d6ea8",
+    scanline: "#001133",
   },
 };
 
