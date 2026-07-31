@@ -19,6 +19,7 @@ const THEMES = {
     accentA: "#ff2079",
     accentB: "#00fff9",
     dim: "#5f8f5f",
+    label: "#9fd9a0",
     scanline: "#000000",
   },
   matrix: {
@@ -29,6 +30,7 @@ const THEMES = {
     accentA: "#00b32d",
     accentB: "#7CFC9A",
     dim: "#0f5f24",
+    label: "#4ddb7a",
     scanline: "#000000",
   },
   vapor: {
@@ -39,6 +41,7 @@ const THEMES = {
     accentA: "#01cdfe",
     accentB: "#b967ff",
     dim: "#7a5ea8",
+    label: "#c9b8ff",
     scanline: "#0a0416",
   },
   gameboy: {
@@ -49,6 +52,7 @@ const THEMES = {
     accentA: "#306230",
     accentB: "#9bbc0f",
     dim: "#306230",
+    label: "#c4e08b",
     scanline: "#0f380f",
   },
   blueprint: {
@@ -59,6 +63,7 @@ const THEMES = {
     accentA: "#ff6b6b",
     accentB: "#7fd8ff",
     dim: "#3d6ea8",
+    label: "#8fc4e8",
     scanline: "#001133",
   },
 };
@@ -207,7 +212,7 @@ function renderSVG({ title, rows, tag }, themeName, glitchOn) {
     .map(([label, value], i) => {
       const y = rowsStartY + i * rowH;
       return `
-      <text x="28" y="${y}" font-family="'Courier New', monospace" font-size="14" fill="${t.dim}">&gt; ${esc(
+      <text x="28" y="${y}" font-family="'Courier New', monospace" font-size="14" fill="${t.label}">&gt; ${esc(
         label
       )}</text>
       <text x="220" y="${y}" font-family="'Courier New', monospace" font-weight="700" font-size="14" fill="${t.primary}">${esc(

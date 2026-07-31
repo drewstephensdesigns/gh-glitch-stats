@@ -38,14 +38,17 @@ Once deployed, embed a card with a plain markdown image:
 
 | Param | Values | Default |
 |---|---|---|
-| `theme` | `crt`, `matrix`, `vapor` | `crt` |
+| `theme` | `crt`, `matrix`, `vapor`, `gameboy`, `blueprint` | `crt` |
 | `glitch` | `1`, `0` | `1` (set to `0` for a static, non-animated card) |
 
 ## Themes
-
-| crt | matrix | vaporwave |
-|---|---|---|
-| ![crt](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=crt) | ![matrix](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=matrix) | ![vapor](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=vapor) |
+<p align="center">
+  <img src="https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=crt" width="220" alt="crt theme" />
+  <img src="https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=matrix" width="220" alt="matrix theme" />
+  <img src="https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=vapor" width="220" alt="vaporwave theme" />
+  <img src="https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=gameboy" width="220" alt="gameboy theme" />
+  <img src="https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=blueprint" width="220" alt="blueprint theme" />
+</p>
 
 ## Deploying
 
