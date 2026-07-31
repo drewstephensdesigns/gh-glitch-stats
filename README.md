@@ -1,10 +1,13 @@
 # GitHub Glitch Stats Card
 
+> [!NOTE]\
+> This a work in progress, images in the repo may not be accurate
+
 Retro, pixelated, glitchy GitHub stats cards for your `README.md` — rendered live
 as SVG by a tiny serverless function on top of the [GitHub REST Repos API](https://docs.github.com/en/rest/repos?apiVersion=2026-03-10).
 
 <p align="center">
-  <img src="https://gh-glitch-stats.vercel.app/api/stats?user=drewstephensdesigns&theme=crt" alt="repo stats card" />
+  <img src="https://gh-glitch-stats.vercel.app/api/stats?user=drewstephensdesigns&theme=blueprint&glitch=1" alt="repo stats card" />
 </p>
 
 No client-side JS ships in the badge itself — GitHub renders it as a plain
@@ -36,9 +39,9 @@ Once deployed, embed a card with a plain markdown image:
 
 ### Options
 
-| Param | Values | Default |
+| Param | Values                                                     | Default |
 |---|---|---|
-| `theme` | `crt`, `matrix`, `vapor`, `gameboy`, `blueprint` | `crt` |
+| `theme` | `crt`, `matrix`, `vapor`, `gameboy`, `blueprint`, `terminal` | `crt` |
 | `glitch` | `1`, `0` | `1` (set to `0` for a static, non-animated card) |
 
 ## Themes
@@ -48,9 +51,9 @@ Once deployed, embed a card with a plain markdown image:
 |:---:|:---:|:---:|
 | ![crt](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=crt) | ![matrix](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=matrix) | ![vapor](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=vapor) |
 
-| Gameboy | Blueprint | 
-|:---:|:---:|
-| ![gameboy](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=gameboy) | ![blueprint](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=blueprint) |
+| Gameboy | Blueprint | Terminal |
+|:---:|:---:|:---:|
+| ![gameboy](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=gameboy) | ![blueprint](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=blueprint) | ![terminal](https://gh-glitch-stats.vercel.app/api/stats?repo=octocat/Hello-World&theme=terminal)
 
 </div>
 
@@ -95,6 +98,18 @@ background, a scanline overlay `<pattern>`, stepped-corner border, and three
 overlapping `<text>` layers with offset `<animate>` timings for the RGB-split
 glitch on the title), and returns it with `Content-Type: image/svg+xml` and a
 30-minute cache header so repeat README views don't hammer your rate limit.
+
+## :sparkling\_heart: Support
+
+I'm just a hobbyist and open source all of my projects so people like me can learn and grow
+
+Thanks! :heart:
+
+## Contributions
+
+Contributions are welcomed, as well as constructive feedback and criticism.  I'm just a hobbyist, but learning what I can.
+
+Made with :heart: and :coffee:
 
 ## License
 
