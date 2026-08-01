@@ -115,6 +115,11 @@ function githubCredit(rightX, y, color) {
   )}</text>`;
 }
 
+function truncate(str, len) {
+  if (str.length <= max) return str;
+  return str.slice(0, max -1 ) + "…"
+}
+
 async function ghFetch(path) {
   const headers = {
     "User-Agent": "gh-glitch-stats",
@@ -155,7 +160,7 @@ async function getUserStats(username) {
   // Cap at 3 pages (300 repos) to keep function fast/within rate limits.
   while (page <= 3) {
     const batch = await ghFetch(
-      `/users/${username}/repos?per_page=100&page=${page}&type=owner&sort=updated`
+        `/users/${username}/repos?per_page=100&page=${page}&type=owner&sort=updated`
     );
     repos = repos.concat(batch);
     if (batch.length < 100) break;
@@ -169,6 +174,30 @@ async function getUserStats(username) {
   }
   const topLang = Object.entries(langCount).sort((a, b) => b[1] - a[1])[0]?.[0] || "n/a";
 
+  let mostStarred = null;
+  for (const r of repos) {
+    if (!mostStarred || (r.stargazers_count || 0) > (mostStarred.stargazers_count || 0)) {
+      mostStarred = r;
+    }
+  }
+  const topRepoLabel = mostStarred
+      ? `${truncate(mostStarred.name, 16)} (${fmt(mostStarred.stargazers_count)}★)`
+      : "n/a";
+
+  // Issues authored by this user, via the Search API (separate endpoint from
+  // the Repos API — not available as a plain per-repo/per-user field).
+  let issuesCreated = "n/a";
+  try {
+    const issueSearch = await ghFetch(
+        `/search/issues?q=${encodeURIComponent(`author:${username} is:issue`)}&per_page=1`
+    );
+    issuesCreated = fmt(issueSearch.total_count);
+  } catch (e) {
+    // Search API has its own stricter rate limit; degrade gracefully rather
+    // than failing the whole card if it's temporarily unavailable.
+    issuesCreated = "n/a";
+  }
+
   return {
     title: user.login,
     rows: [
@@ -176,6 +205,8 @@ async function getUserStats(username) {
       ["stars", fmt(totalStars)],
       ["forks", fmt(totalForks)],
       ["followers", fmt(user.followers)],
+      ["top repo", topRepoLabel],
+      ["issues opened", issuesCreated],
     ],
     tag: topLang,
   };
@@ -183,11 +214,11 @@ async function getUserStats(username) {
 
 function renderTerminalWindow({ title, rows, tag}, t) {
   const W = 480;
-  const H = 210;
   const barH = 28;
   const rowH = 24;
   const rowsStartY = barH + 72;
   const r = 10;
+  const H = rowsStartY + (rows.length - 1) * rowH + 38;
 
   const dotsRow = t.dots
       .map((c, i) => `<circle cx="${20 + i * 18}" cy="${barH / 2}" r="6" fill="${c}"/>`)
@@ -246,9 +277,9 @@ function renderSVG({ title, rows, tag }, themeName, glitchOn) {
   }
 
   const W = 480;
-  const H = 200;
   const rowH = 24;
   const rowsStartY = 92;
+  const H = rowsStartY + (rows.length - 1) * rowH + 36;
 
   // Pixel-grid background: small squares tiled via <pattern>.
   const gridPattern = `
