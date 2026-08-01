@@ -115,7 +115,7 @@ function githubCredit(rightX, y, color) {
   )}</text>`;
 }
 
-function truncate(str, len) {
+function truncate(str, max) {
   if (str.length <= max) return str;
   return str.slice(0, max -1 ) + "…"
 }
